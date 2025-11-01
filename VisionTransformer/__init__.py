@@ -7,15 +7,15 @@ from TransformerEncoderLayer import TransformerEncoderLayer
 class VisionTransformer(nn.Module):
     def __init__(
             self,
-            image_size: int = 32,
-            in_channels: int = 3,
-            patch_size: int = 4,
-            embedding_dimensions: int = 512,
-            heads_num: int = 8,
-            mlp_dimensions: int = 1024,
-            dropout: float = 0.1,
-            transformer_layers_num: int = 6,
-            classes_num: int = 10,
+            image_size: int,
+            in_channels: int,
+            patch_size: int,
+            embedding_dimensions: int,
+            heads_num: int,
+            mlp_dimensions: int,
+            dropout: float,
+            transformer_layers_num: int,
+            classes_num: int,
             embedding_layer: PatchEmbedding = PatchEmbedding
         ):
         super(VisionTransformer, self).__init__()

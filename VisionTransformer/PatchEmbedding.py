@@ -4,10 +4,10 @@ import torch.nn as nn
 class PatchEmbedding(nn.Module):
     def __init__(
         self,
-        image_size: int = 32,
-        in_channels: int = 3,
-        patch_size: int = 4,
-        embedding_dimensions: int = 512,
+        image_size: int,
+        in_channels: int,
+        patch_size: int,
+        embedding_dimensions: int,
     ):
         super(PatchEmbedding, self).__init__()
         self.image_size = image_size

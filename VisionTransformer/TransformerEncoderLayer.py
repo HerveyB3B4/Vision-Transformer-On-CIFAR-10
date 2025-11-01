@@ -7,10 +7,10 @@ from FeedForward import FeedForward
 class TransformerEncoderLayer(nn.Module):
     def __init__(
             self,
-            embedding_dimensions: int = 512,
-            heads_num: int = 8,
-            mlp_dimensions: int = 1024,
-            dropout: float = 0.1,
+            embedding_dimensions: int,
+            heads_num: int,
+            mlp_dimensions: int,
+            dropout: float,
     ):
         super(TransformerEncoderLayer, self).__init__()
         self.attention = MultiHeadSelfAttention(

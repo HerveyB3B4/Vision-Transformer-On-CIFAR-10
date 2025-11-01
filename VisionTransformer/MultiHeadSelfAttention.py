@@ -4,8 +4,8 @@ import torch.nn as nn
 class MultiHeadSelfAttention(nn.Module):
     def __init__(
             self,
-            embedding_dimensions: int = 512,
-            heads_num: int = 8,
+            embedding_dimensions,
+            heads_num,
         ):
         super(MultiHeadSelfAttention, self).__init__()
         self.embedding_dimensions = embedding_dimensions
