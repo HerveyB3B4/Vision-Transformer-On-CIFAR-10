@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
 
-from PatchEmbedding import PatchEmbedding
-from TransformerEncoderLayer import TransformerEncoderLayer
+from .PatchEmbedding import PatchEmbedding
+from .TransformerEncoderLayer import TransformerEncoderLayer
 
 class VisionTransformer(nn.Module):
     def __init__(
