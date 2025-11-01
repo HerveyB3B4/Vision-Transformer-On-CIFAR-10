@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
 
-from MultiHeadSelfAttention import MultiHeadSelfAttention
-from FeedForward import FeedForward
+from .MultiHeadSelfAttention import MultiHeadSelfAttention
+from .FeedForward import FeedForward
 
 class TransformerEncoderLayer(nn.Module):
     def __init__(
