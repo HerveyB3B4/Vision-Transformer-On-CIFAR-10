@@ -1,3 +1,4 @@
+import os
 import torch
 import torch.nn as nn
 import torchvision
@@ -5,7 +6,6 @@ import torchvision.transforms as transforms
 from torch.utils.data import Dataset, DataLoader, random_split
 
 from VisionTransformer import VisionTransformer
-
 
 class DatasetWrapper(Dataset):
     def __init__(self, dataset, transform=None):
@@ -49,6 +49,8 @@ def validate_epoch(
 ) -> float:
     model.eval()
     total_loss = 0.0
+    correct = 0
+    total = 0
 
     with torch.no_grad():
         for inputs, targets in loader:
@@ -56,8 +58,11 @@ def validate_epoch(
             outputs = model(inputs)
             loss = loss_function(outputs, targets)
             total_loss += loss.item()
+            _, predicted = torch.max(outputs.data, 1)
+            total += targets.size(0)
+            correct += (predicted == targets).sum().item()
 
-    return total_loss / len(loader)
+    return total_loss / len(loader), 100 * correct / total
 
 
 def test_model(model: nn.Module, loader: DataLoader, device: torch.device) -> float:
@@ -142,15 +147,26 @@ if __name__ == "__main__":
 
     # 定义损失函数和优化器
     LossFunction = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.002)
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.00001)
+
+    WEIGHTS_PATH = "./weights/vit_cifar_10.pth"
+    if os.path.exists(WEIGHTS_PATH):
+        model.load_state_dict(torch.load(WEIGHTS_PATH, map_location=device))
+
+    best_loss = float('inf')
 
     for epoch in range(50):
         train_loss = train_epoch(model, train_loader, optimizer, LossFunction, device)
-        validation_loss = validate_epoch(model, validation_loader, LossFunction, device)
+        validation_loss, validation_accuracy = validate_epoch(model, validation_loader, LossFunction, device)
 
         print(
-            f"Epoch [{epoch+1}/50], Train Loss: {train_loss:.4f}, Validation Loss: {validation_loss:.4f}"
+            f"Epoch [{epoch+1}/50], Train Loss: {train_loss:.4f}, Validation Loss: {validation_loss:.4f} Accuracy: {validation_accuracy:.2f}%"
         )
+        
+        if validation_loss < best_loss:
+            best_loss = validation_loss
+            torch.save(model.state_dict(), WEIGHTS_PATH)
 
+    model.load_state_dict(torch.load(WEIGHTS_PATH))
     test_accuracy = test_model(model, test_loader, device)
     print(f"Test Accuracy: {test_accuracy:.2f}%")
